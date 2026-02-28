@@ -12,12 +12,12 @@ import 'package:smartfactory/screens/projects/project_list_screen.dart';
 import 'package:smartfactory/screens/projects/project_form_screen.dart';
 import 'package:smartfactory/screens/projects/project_detail_screen.dart';
 import 'package:smartfactory/screens/settings/settings_screen.dart';
-import 'package:smartfactory/screens/workshop/workshop_home_screen.dart';
 import 'package:smartfactory/screens/workshop/daily_report_screen.dart';
 import 'package:smartfactory/screens/workshop/quality_check_screen.dart';
 import 'package:smartfactory/screens/workshop/repair_log_screen.dart';
 import 'package:smartfactory/screens/workshop/incoming_inspection_screen.dart';
 import 'package:smartfactory/widgets/common/app_scaffold.dart';
+import 'package:smartfactory/widgets/workshop/workshop_shell.dart';
 
 /// Roles that belong to the workshop (floor) experience.
 const _workshopRoles = {'leader', 'qc', 'technician'};
@@ -42,7 +42,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isLoggedIn = session != null;
       final loc = state.matchedLocation;
       final isLoginPage = loc == '/login';
-      final isWorkshopPage = loc.startsWith('/workshop');
 
       // 1. Not logged in → always go to /login
       if (!isLoggedIn) {
@@ -52,15 +51,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       // 2. Logged in + on /login → role-based home
       if (isLoginPage) {
         final role = profileAsync.valueOrNull?.role;
-        return _isWorkshopRole(role) ? '/workshop' : '/';
+        return _isWorkshopRole(role) ? '/workshop/daily-report' : '/';
       }
 
       // 3. Logged in + profile loaded + workshop role → ensure on /workshop tree
       //    (only redirect from the root dashboard, not from shared pages
       //     like /workspace or /projects that workshop users may also visit)
-      if (loc == '/') {
+      if (loc == '/' || loc == '/workshop') {
         final role = profileAsync.valueOrNull?.role;
-        if (_isWorkshopRole(role)) return '/workshop';
+        if (_isWorkshopRole(role)) return '/workshop/daily-report';
       }
 
       return null; // let through
@@ -74,42 +73,37 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, __) => const LoginScreen(),
       ),
 
-      // ─── Workshop routes (standalone, dark theme) ──────────
-      // These live OUTSIDE the AppScaffold ShellRoute.
-      GoRoute(
-        path: '/workshop',
-        name: 'workshop-home',
-        builder: (_, __) => const WorkshopHomeScreen(),
+      // ─── Workshop routes (ShellRoute with persistent sidebar) ──
+      ShellRoute(
+        builder: (context, state, child) => WorkshopShell(child: child),
         routes: [
           GoRoute(
-            path: 'daily-report',
+            path: '/workshop/daily-report',
             name: 'daily-report',
             builder: (_, __) => const DailyReportScreen(),
           ),
           GoRoute(
-            path: 'quality',
+            path: '/workshop/quality',
             name: 'quality-check',
             builder: (_, __) => const QualityCheckScreen(),
           ),
           GoRoute(
-            path: 'repair',
+            path: '/workshop/repair',
             name: 'repair-log',
             builder: (_, __) => const RepairLogScreen(),
           ),
           GoRoute(
-            path: 'incoming',
+            path: '/workshop/incoming',
             name: 'incoming-inspection',
             builder: (_, __) => const IncomingInspectionScreen(),
           ),
-          // Placeholder for defect code reference (Sprint 3)
           GoRoute(
-            path: 'defect-codes',
+            path: '/workshop/defect-codes',
             name: 'workshop-defect-codes',
             builder: (_, __) => const _DefectCodesPlaceholder(),
           ),
-          // Placeholder for repair history (Sprint 3)
           GoRoute(
-            path: 'repair-history',
+            path: '/workshop/repair-history',
             name: 'repair-history',
             builder: (_, __) => const _RepairHistoryPlaceholder(),
           ),
@@ -213,22 +207,10 @@ class _DefectCodesPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1E293B),
-        foregroundColor: Colors.white,
-        title: const Text('不良代码'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, size: 18),
-          onPressed: () => context.go('/workshop'),
-        ),
-      ),
-      body: const Center(
-        child: Text(
-          'Sprint 3 开发中',
-          style: TextStyle(color: Color(0xFF94A3B8)),
-        ),
+    return const Center(
+      child: Text(
+        'Sprint 3 开发中',
+        style: TextStyle(color: Color(0xFF94A3B8)),
       ),
     );
   }
@@ -239,22 +221,10 @@ class _RepairHistoryPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1E293B),
-        foregroundColor: Colors.white,
-        title: const Text('维修历史'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, size: 18),
-          onPressed: () => context.go('/workshop'),
-        ),
-      ),
-      body: const Center(
-        child: Text(
-          'Sprint 3 开发中',
-          style: TextStyle(color: Color(0xFF94A3B8)),
-        ),
+    return const Center(
+      child: Text(
+        'Sprint 3 开发中',
+        style: TextStyle(color: Color(0xFF94A3B8)),
       ),
     );
   }
