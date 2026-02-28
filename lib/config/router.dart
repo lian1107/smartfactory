@@ -153,6 +153,15 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (_, state) => DocDetailScreen(
               docId: state.pathParameters['id']!,
             ),
+            routes: [
+              GoRoute(
+                path: 'edit',
+                name: 'doc-edit',
+                builder: (_, state) => DocFormScreen(
+                  docId: state.pathParameters['id'],
+                ),
+              ),
+            ],
           ),
           GoRoute(
             path: '/settings',

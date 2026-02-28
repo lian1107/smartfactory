@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:smartfactory/config/constants.dart';
 import 'package:smartfactory/config/theme.dart';
@@ -34,15 +35,7 @@ class DocDetailScreen extends ConsumerWidget {
                 IconButton(
                   icon: const Icon(Icons.edit_outlined),
                   tooltip: '编辑',
-                  onPressed: () {
-                    // Navigate to form with existing doc data
-                    // For now navigates to /docs/new; edit support via docId param
-                    Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => _EditDocWrapper(docId: doc.id),
-                      ),
-                    );
-                  },
+                  onPressed: () => context.go('/docs/${doc.id}/edit'),
                 ),
             ],
           ),
@@ -94,42 +87,6 @@ class DocDetailScreen extends ConsumerWidget {
       'file' => '上传文件',
       _ => '在线笔记',
     };
-  }
-}
-
-// Wrapper to use DocFormScreen with a docId for editing
-class _EditDocWrapper extends ConsumerWidget {
-  final String docId;
-  const _EditDocWrapper({required this.docId});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Import DocFormScreen inline to avoid circular dependency issues
-    return _DocFormInline(docId: docId);
-  }
-}
-
-class _DocFormInline extends StatefulWidget {
-  final String docId;
-  const _DocFormInline({required this.docId});
-
-  @override
-  State<_DocFormInline> createState() => _DocFormInlineState();
-}
-
-class _DocFormInlineState extends State<_DocFormInline> {
-  @override
-  Widget build(BuildContext context) {
-    // Redirect to the actual DocFormScreen via router would be cleaner,
-    // but since router context may not be available in MaterialPageRoute,
-    // we just pop back with a message for now
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('请从文档列表进入编辑')),
-      );
-    });
-    return const Scaffold(body: SizedBox());
   }
 }
 
