@@ -65,6 +65,7 @@ class _RepairLogScreenState extends ConsumerState<RepairLogScreen> {
           _actionCtrl.clear();
           _durationCtrl.clear();
         });
+        _formKey.currentState?.reset();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('维修记录提交成功'),

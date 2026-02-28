@@ -65,6 +65,7 @@ class _QualityCheckScreenState extends ConsumerState<QualityCheckScreen> {
           _defectCtrl.text = '0';
           _notesCtrl.clear();
         });
+        _formKey.currentState?.reset();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('检验记录提交成功'),

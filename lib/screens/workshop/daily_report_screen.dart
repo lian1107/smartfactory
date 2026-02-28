@@ -62,6 +62,7 @@ class _DailyReportScreenState extends ConsumerState<DailyReportScreen> {
           _selectedProductId = null;
           _rebuildSlots(Shift.early);
         });
+        _formKey.currentState?.reset();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('报工提交成功'),
