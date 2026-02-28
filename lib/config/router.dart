@@ -17,25 +17,15 @@ import 'package:smartfactory/screens/workshop/quality_check_screen.dart';
 import 'package:smartfactory/screens/workshop/repair_log_screen.dart';
 import 'package:smartfactory/screens/workshop/incoming_inspection_screen.dart';
 import 'package:smartfactory/widgets/common/app_scaffold.dart';
-import 'package:smartfactory/widgets/workshop/workshop_shell.dart';
-
-/// Roles that belong to the workshop (floor) experience.
-const _workshopRoles = {'leader', 'qc', 'technician'};
-
-bool _isWorkshopRole(String? role) =>
-    role != null && _workshopRoles.contains(role);
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
-  final profileAsync = ref.watch(currentProfileProvider);
 
   return GoRouter(
     initialLocation: '/',
     debugLogDiagnostics: false,
 
-    // ─── Global redirect ───────────────────────────────────────
     redirect: (context, state) {
-      // While auth is loading don't redirect — prevents flicker
       if (authState.isLoading) return null;
 
       final session = authState.valueOrNull?.session;
@@ -43,74 +33,22 @@ final routerProvider = Provider<GoRouter>((ref) {
       final loc = state.matchedLocation;
       final isLoginPage = loc == '/login';
 
-      // 1. Not logged in → always go to /login
       if (!isLoggedIn) {
         return isLoginPage ? null : '/login';
       }
+      if (isLoginPage) return '/';
 
-      // 2. Logged in + on /login → role-based home
-      if (isLoginPage) {
-        final role = profileAsync.valueOrNull?.role;
-        return _isWorkshopRole(role) ? '/workshop/daily-report' : '/';
-      }
-
-      // 3. Logged in + profile loaded + workshop role → ensure on /workshop tree
-      //    (only redirect from the root dashboard, not from shared pages
-      //     like /workspace or /projects that workshop users may also visit)
-      if (loc == '/' || loc == '/workshop') {
-        final role = profileAsync.valueOrNull?.role;
-        if (_isWorkshopRole(role)) return '/workshop/daily-report';
-      }
-
-      return null; // let through
+      return null;
     },
 
     routes: [
-      // ─── Auth ──────────────────────────────────────────────
       GoRoute(
         path: '/login',
         name: 'login',
         builder: (_, __) => const LoginScreen(),
       ),
 
-      // ─── Workshop routes (ShellRoute with persistent sidebar) ──
-      ShellRoute(
-        builder: (context, state, child) => WorkshopShell(child: child),
-        routes: [
-          GoRoute(
-            path: '/workshop/daily-report',
-            name: 'daily-report',
-            builder: (_, __) => const DailyReportScreen(),
-          ),
-          GoRoute(
-            path: '/workshop/quality',
-            name: 'quality-check',
-            builder: (_, __) => const QualityCheckScreen(),
-          ),
-          GoRoute(
-            path: '/workshop/repair',
-            name: 'repair-log',
-            builder: (_, __) => const RepairLogScreen(),
-          ),
-          GoRoute(
-            path: '/workshop/incoming',
-            name: 'incoming-inspection',
-            builder: (_, __) => const IncomingInspectionScreen(),
-          ),
-          GoRoute(
-            path: '/workshop/defect-codes',
-            name: 'workshop-defect-codes',
-            builder: (_, __) => const _DefectCodesPlaceholder(),
-          ),
-          GoRoute(
-            path: '/workshop/repair-history',
-            name: 'repair-history',
-            builder: (_, __) => const _RepairHistoryPlaceholder(),
-          ),
-        ],
-      ),
-
-      // ─── Office / admin routes (wrapped in AppScaffold) ────
+      // ─── All authenticated routes under AppScaffold ────────
       ShellRoute(
         builder: (context, state, child) => AppScaffold(child: child),
         routes: [
@@ -123,6 +61,25 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/workspace',
             name: 'workspace',
             builder: (_, __) => const WorkspaceScreen(),
+          ),
+          GoRoute(
+            path: '/projects',
+            name: 'projects',
+            builder: (_, __) => const ProjectListScreen(),
+            routes: [
+              GoRoute(
+                path: 'new',
+                name: 'projects-new',
+                builder: (_, __) => const ProjectFormScreen(),
+              ),
+              GoRoute(
+                path: ':id',
+                name: 'project-detail',
+                builder: (_, state) => ProjectDetailScreen(
+                  projectId: state.pathParameters['id']!,
+                ),
+              ),
+            ],
           ),
           GoRoute(
             path: '/products',
@@ -153,23 +110,46 @@ final routerProvider = Provider<GoRouter>((ref) {
             ],
           ),
           GoRoute(
-            path: '/projects',
-            name: 'projects',
-            builder: (_, __) => const ProjectListScreen(),
-            routes: [
-              GoRoute(
-                path: 'new',
-                name: 'projects-new',
-                builder: (_, __) => const ProjectFormScreen(),
-              ),
-              GoRoute(
-                path: ':id',
-                name: 'project-detail',
-                builder: (_, state) => ProjectDetailScreen(
-                  projectId: state.pathParameters['id']!,
-                ),
-              ),
-            ],
+            path: '/workshop/daily-report',
+            name: 'daily-report',
+            builder: (_, __) => const DailyReportScreen(),
+          ),
+          GoRoute(
+            path: '/workshop/quality',
+            name: 'quality-check',
+            builder: (_, __) => const QualityCheckScreen(),
+          ),
+          GoRoute(
+            path: '/workshop/repair',
+            name: 'repair-log',
+            builder: (_, __) => const RepairLogScreen(),
+          ),
+          GoRoute(
+            path: '/workshop/incoming',
+            name: 'incoming-inspection',
+            builder: (_, __) => const IncomingInspectionScreen(),
+          ),
+          GoRoute(
+            path: '/ai',
+            name: 'ai',
+            builder: (_, __) => const _PlaceholderScreen(title: 'AI 分析'),
+          ),
+          GoRoute(
+            path: '/docs',
+            name: 'docs',
+            builder: (_, __) => const _PlaceholderScreen(title: '文档'),
+          ),
+          GoRoute(
+            path: '/docs/new',
+            name: 'docs-new',
+            builder: (_, __) => const _PlaceholderScreen(title: '新建文档'),
+          ),
+          GoRoute(
+            path: '/docs/:id',
+            name: 'doc-detail',
+            builder: (_, state) => _PlaceholderScreen(
+              title: '文档详情 ${state.pathParameters['id']}',
+            ),
           ),
           GoRoute(
             path: '/settings',
@@ -200,31 +180,16 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 });
 
-// ─── Inline Sprint 3 placeholders ─────────────────────────────
-
-class _DefectCodesPlaceholder extends StatelessWidget {
-  const _DefectCodesPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Sprint 3 开发中',
-        style: TextStyle(color: Color(0xFF94A3B8)),
-      ),
-    );
-  }
-}
-
-class _RepairHistoryPlaceholder extends StatelessWidget {
-  const _RepairHistoryPlaceholder();
+class _PlaceholderScreen extends StatelessWidget {
+  final String title;
+  const _PlaceholderScreen({required this.title});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Sprint 3 开发中',
-        style: TextStyle(color: Color(0xFF94A3B8)),
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: Center(
+        child: Text('$title — 开发中', style: const TextStyle(color: Colors.grey)),
       ),
     );
   }
