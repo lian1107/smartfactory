@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:smartfactory/models/product.dart';
 import 'package:smartfactory/providers/project_providers.dart';
 import 'package:smartfactory/providers/report_providers.dart';
@@ -58,13 +57,17 @@ class _DailyReportScreenState extends ConsumerState<DailyReportScreen> {
           );
 
       if (mounted) {
+        setState(() {
+          _shift = Shift.early;
+          _selectedProductId = null;
+          _rebuildSlots(Shift.early);
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('报工提交成功'),
             backgroundColor: Color(0xFF10B981),
           ),
         );
-        context.pop();
       }
     } catch (e) {
       if (mounted) {
@@ -84,17 +87,9 @@ class _DailyReportScreenState extends ConsumerState<DailyReportScreen> {
   Widget build(BuildContext context) {
     final productsAsync = ref.watch(productListProvider);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1E293B),
-        foregroundColor: Colors.white,
-        title: const Text('生产报工'),
-        centerTitle: false,
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
+    return Form(
+      key: _formKey,
+      child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
             Text(
@@ -181,7 +176,6 @@ class _DailyReportScreenState extends ConsumerState<DailyReportScreen> {
             const SizedBox(height: 32),
           ],
         ),
-      ),
     );
   }
 

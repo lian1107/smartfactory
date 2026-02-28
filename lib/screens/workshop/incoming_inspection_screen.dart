@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:smartfactory/providers/report_providers.dart';
 import 'package:smartfactory/widgets/production/big_number_field.dart';
 
@@ -66,13 +65,21 @@ class _IncomingInspectionScreenState
           );
 
       if (mounted) {
+        setState(() {
+          _materialCtrl.clear();
+          _supplierCtrl.clear();
+          _totalCtrl.clear();
+          _defectCtrl.text = '0';
+          _descCtrl.clear();
+          _result = 'pass';
+          _formKey.currentState?.reset();
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('来料检验提交成功'),
             backgroundColor: Color(0xFF10B981),
           ),
         );
-        context.pop();
       }
     } catch (e) {
       if (mounted) {
@@ -90,17 +97,9 @@ class _IncomingInspectionScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1E293B),
-        foregroundColor: Colors.white,
-        title: const Text('来料检验'),
-        centerTitle: false,
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
+    return Form(
+      key: _formKey,
+      child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
             const Text('物料名称 *',
@@ -227,7 +226,6 @@ class _IncomingInspectionScreenState
             const SizedBox(height: 32),
           ],
         ),
-      ),
     );
   }
 

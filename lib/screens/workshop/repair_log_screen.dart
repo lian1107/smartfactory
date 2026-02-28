@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:smartfactory/providers/project_providers.dart';
 import 'package:smartfactory/providers/report_providers.dart';
 
@@ -60,13 +59,18 @@ class _RepairLogScreenState extends ConsumerState<RepairLogScreen> {
           );
 
       if (mounted) {
+        setState(() {
+          _selectedProductId = null;
+          _selectedFaultTypes.clear();
+          _actionCtrl.clear();
+          _durationCtrl.clear();
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('维修记录提交成功'),
             backgroundColor: Color(0xFF10B981),
           ),
         );
-        context.pop();
       }
     } catch (e) {
       if (mounted) {
@@ -86,17 +90,9 @@ class _RepairLogScreenState extends ConsumerState<RepairLogScreen> {
   Widget build(BuildContext context) {
     final productsAsync = ref.watch(productListProvider);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1E293B),
-        foregroundColor: Colors.white,
-        title: const Text('维修记录'),
-        centerTitle: false,
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
+    return Form(
+      key: _formKey,
+      child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
             const Text('产品（可选）',
@@ -295,7 +291,6 @@ class _RepairLogScreenState extends ConsumerState<RepairLogScreen> {
             const SizedBox(height: 32),
           ],
         ),
-      ),
     );
   }
 }
