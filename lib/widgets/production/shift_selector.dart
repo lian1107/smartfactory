@@ -88,14 +88,10 @@ class ShiftSelector extends StatelessWidget {
                 duration: const Duration(milliseconds: 150),
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
-                  color: isSelected
-                      ? AppColors.primary
-                      : const Color(0xFF1E293B),
+                  color: isSelected ? AppColors.primary : Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: isSelected
-                        ? AppColors.primary
-                        : const Color(0xFF334155),
+                    color: isSelected ? AppColors.primary : AppColors.border,
                   ),
                 ),
                 child: Column(
@@ -103,7 +99,7 @@ class ShiftSelector extends StatelessWidget {
                     Text(
                       shift.label,
                       style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.white70,
+                        color: isSelected ? Colors.white : AppColors.textPrimary,
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
@@ -112,7 +108,7 @@ class ShiftSelector extends StatelessWidget {
                     Text(
                       shift.timeRange,
                       style: TextStyle(
-                        color: isSelected ? Colors.white70 : Colors.white38,
+                        color: isSelected ? Colors.white70 : AppColors.textSecondary,
                         fontSize: 11,
                       ),
                     ),

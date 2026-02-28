@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:smartfactory/config/theme.dart';
 import 'package:smartfactory/models/product.dart';
 import 'package:smartfactory/providers/project_providers.dart';
 import 'package:smartfactory/providers/report_providers.dart';
@@ -97,7 +98,7 @@ class _QualityCheckScreenState extends ConsumerState<QualityCheckScreen> {
           padding: const EdgeInsets.all(16),
           children: [
             const Text('检验类型',
-                style: TextStyle(color: Colors.white70, fontSize: 13)),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -117,7 +118,7 @@ class _QualityCheckScreenState extends ConsumerState<QualityCheckScreen> {
             const SizedBox(height: 20),
 
             const Text('产品（可选）',
-                style: TextStyle(color: Colors.white70, fontSize: 13)),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
             const SizedBox(height: 8),
             productsAsync.maybeWhen(
               data: (products) => _ProductDropdown(
@@ -140,28 +141,16 @@ class _QualityCheckScreenState extends ConsumerState<QualityCheckScreen> {
             const SizedBox(height: 16),
 
             const Text('不良描述（可选）',
-                style: TextStyle(color: Colors.white70, fontSize: 13)),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
             const SizedBox(height: 8),
             TextFormField(
               controller: _notesCtrl,
-              style: const TextStyle(color: Colors.white, fontSize: 14),
+              style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
               maxLines: 3,
               decoration: InputDecoration(
                 hintText: '描述不良现象...',
                 hintStyle:
-                    const TextStyle(color: Colors.white38, fontSize: 13),
-                filled: true,
-                fillColor: const Color(0xFF1E293B),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide:
-                      const BorderSide(color: Color(0xFF334155)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide:
-                      const BorderSide(color: Color(0xFF334155)),
-                ),
+                    const TextStyle(color: AppColors.textDisabled, fontSize: 13),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: const BorderSide(
@@ -224,19 +213,19 @@ class _TypeButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: selected
                 ? const Color(0xFF3B82F6)
-                : const Color(0xFF1E293B),
+                : Colors.white,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: selected
                   ? const Color(0xFF3B82F6)
-                  : const Color(0xFF334155),
+                  : AppColors.border,
             ),
           ),
           child: Text(
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: selected ? Colors.white : Colors.white70,
+              color: selected ? Colors.white : AppColors.textPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
@@ -262,21 +251,10 @@ class _ProductDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
       value: value,
-      dropdownColor: const Color(0xFF1E293B),
-      style: const TextStyle(color: Colors.white, fontSize: 14),
+      style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
       decoration: InputDecoration(
         hintText: '不选则不关联产品',
-        hintStyle: const TextStyle(color: Colors.white38),
-        filled: true,
-        fillColor: const Color(0xFF1E293B),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF334155)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF334155)),
-        ),
+        hintStyle: const TextStyle(color: AppColors.textDisabled),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       ),
@@ -284,7 +262,7 @@ class _ProductDropdown extends StatelessWidget {
         const DropdownMenuItem<String>(
           value: null,
           child: Text('-- 不关联产品 --',
-              style: TextStyle(color: Colors.white54)),
+              style: TextStyle(color: AppColors.textSecondary)),
         ),
         ...products.map((p) => DropdownMenuItem<String>(
               value: p.id,

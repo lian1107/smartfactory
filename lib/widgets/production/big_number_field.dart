@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:smartfactory/config/theme.dart';
 
 /// 大字号数字输入框，适合车间手机操作
 class BigNumberField extends StatelessWidget {
@@ -24,7 +25,7 @@ class BigNumberField extends StatelessWidget {
         Text(
           isRequired ? '$label *' : label,
           style: const TextStyle(
-            color: Colors.white70,
+            color: AppColors.textSecondary,
             fontSize: 13,
           ),
         ),
@@ -34,7 +35,7 @@ class BigNumberField extends StatelessWidget {
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           style: const TextStyle(
-            color: Colors.white,
+            color: AppColors.textPrimary,
             fontSize: 32,
             fontWeight: FontWeight.bold,
           ),
@@ -42,28 +43,9 @@ class BigNumberField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hint ?? '0',
             hintStyle: const TextStyle(
-              color: Colors.white24,
+              color: AppColors.textDisabled,
               fontSize: 32,
               fontWeight: FontWeight.bold,
-            ),
-            filled: true,
-            fillColor: const Color(0xFF1E293B),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFF334155)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFF334155)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide:
-                  const BorderSide(color: Color(0xFF3B82F6), width: 2),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 16,
-              horizontal: 12,
             ),
           ),
           validator: isRequired

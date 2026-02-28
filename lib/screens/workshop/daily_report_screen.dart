@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:smartfactory/config/theme.dart';
 import 'package:smartfactory/models/product.dart';
 import 'package:smartfactory/providers/project_providers.dart';
 import 'package:smartfactory/providers/report_providers.dart';
@@ -95,13 +96,13 @@ class _DailyReportScreenState extends ConsumerState<DailyReportScreen> {
           children: [
             Text(
               _formatDate(DateTime.now()),
-              style: const TextStyle(color: Colors.white54, fontSize: 13),
+              style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
             const SizedBox(height: 16),
 
             // 班次选择
             const Text('选择班次',
-                style: TextStyle(color: Colors.white70, fontSize: 13)),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
             const SizedBox(height: 8),
             ShiftSelector(
               selected: _shift,
@@ -116,7 +117,7 @@ class _DailyReportScreenState extends ConsumerState<DailyReportScreen> {
 
             // 产品选择
             const Text('选择产品（可选）',
-                style: TextStyle(color: Colors.white70, fontSize: 13)),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
             const SizedBox(height: 8),
             productsAsync.when(
               loading: () => const SizedBox(
@@ -140,7 +141,7 @@ class _DailyReportScreenState extends ConsumerState<DailyReportScreen> {
             const Text(
               '各时段产量',
               style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                   fontSize: 15,
                   fontWeight: FontWeight.w600),
             ),
@@ -201,21 +202,10 @@ class _ProductDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
       value: value,
-      dropdownColor: const Color(0xFF1E293B),
-      style: const TextStyle(color: Colors.white, fontSize: 14),
+      style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
       decoration: InputDecoration(
         hintText: '不选则不关联产品',
-        hintStyle: const TextStyle(color: Colors.white38),
-        filled: true,
-        fillColor: const Color(0xFF1E293B),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF334155)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF334155)),
-        ),
+        hintStyle: const TextStyle(color: AppColors.textDisabled),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       ),
@@ -223,7 +213,7 @@ class _ProductDropdown extends StatelessWidget {
         const DropdownMenuItem<String>(
           value: null,
           child: Text('-- 不关联产品 --',
-              style: TextStyle(color: Colors.white54)),
+              style: TextStyle(color: AppColors.textSecondary)),
         ),
         ...products.map((p) => DropdownMenuItem<String>(
               value: p.id,

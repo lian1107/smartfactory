@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:smartfactory/config/theme.dart';
 import 'package:smartfactory/providers/project_providers.dart';
 import 'package:smartfactory/providers/report_providers.dart';
 
@@ -97,29 +98,16 @@ class _RepairLogScreenState extends ConsumerState<RepairLogScreen> {
           padding: const EdgeInsets.all(16),
           children: [
             const Text('产品（可选）',
-                style: TextStyle(color: Colors.white70, fontSize: 13)),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
             const SizedBox(height: 8),
             productsAsync.maybeWhen(
               data: (products) => DropdownButtonFormField<String>(
                 value: _selectedProductId,
-                dropdownColor: const Color(0xFF1E293B),
                 style:
-                    const TextStyle(color: Colors.white, fontSize: 14),
+                    const TextStyle(color: AppColors.textPrimary, fontSize: 14),
                 decoration: InputDecoration(
                   hintText: '选择产品',
-                  hintStyle: const TextStyle(color: Colors.white38),
-                  filled: true,
-                  fillColor: const Color(0xFF1E293B),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide:
-                        const BorderSide(color: Color(0xFF334155)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide:
-                        const BorderSide(color: Color(0xFF334155)),
-                  ),
+                  hintStyle: const TextStyle(color: AppColors.textDisabled),
                   contentPadding: const EdgeInsets.symmetric(
                       horizontal: 14, vertical: 12),
                 ),
@@ -127,7 +115,7 @@ class _RepairLogScreenState extends ConsumerState<RepairLogScreen> {
                   const DropdownMenuItem<String>(
                     value: null,
                     child: Text('-- 不关联产品 --',
-                        style: TextStyle(color: Colors.white54)),
+                        style: TextStyle(color: AppColors.textSecondary)),
                   ),
                   ...products.map((p) => DropdownMenuItem<String>(
                         value: p.id,
@@ -142,7 +130,7 @@ class _RepairLogScreenState extends ConsumerState<RepairLogScreen> {
             const SizedBox(height: 20),
 
             const Text('故障类型（可多选）',
-                style: TextStyle(color: Colors.white70, fontSize: 13)),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -164,18 +152,18 @@ class _RepairLogScreenState extends ConsumerState<RepairLogScreen> {
                     decoration: BoxDecoration(
                       color: selected
                           ? const Color(0xFFF59E0B)
-                          : const Color(0xFF1E293B),
+                          : Colors.white,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: selected
                             ? const Color(0xFFF59E0B)
-                            : const Color(0xFF334155),
+                            : AppColors.border,
                       ),
                     ),
                     child: Text(
                       type,
                       style: TextStyle(
-                        color: selected ? Colors.white : Colors.white70,
+                        color: selected ? Colors.white : AppColors.textPrimary,
                         fontSize: 14,
                         fontWeight: selected
                             ? FontWeight.w600
@@ -189,30 +177,18 @@ class _RepairLogScreenState extends ConsumerState<RepairLogScreen> {
             const SizedBox(height: 20),
 
             const Text('维修措施 *',
-                style: TextStyle(color: Colors.white70, fontSize: 13)),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
             const SizedBox(height: 8),
             TextFormField(
               controller: _actionCtrl,
-              style: const TextStyle(color: Colors.white, fontSize: 14),
+              style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
               maxLines: 4,
               validator: (v) =>
                   (v == null || v.trim().isEmpty) ? '请填写维修措施' : null,
               decoration: InputDecoration(
                 hintText: '描述维修过程和处理措施...',
                 hintStyle:
-                    const TextStyle(color: Colors.white38, fontSize: 13),
-                filled: true,
-                fillColor: const Color(0xFF1E293B),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide:
-                      const BorderSide(color: Color(0xFF334155)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide:
-                      const BorderSide(color: Color(0xFF334155)),
-                ),
+                    const TextStyle(color: AppColors.textDisabled, fontSize: 13),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: const BorderSide(
@@ -223,36 +199,24 @@ class _RepairLogScreenState extends ConsumerState<RepairLogScreen> {
             const SizedBox(height: 16),
 
             const Text('维修时长（分钟，可选）',
-                style: TextStyle(color: Colors.white70, fontSize: 13)),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
             const SizedBox(height: 8),
             TextFormField(
               controller: _durationCtrl,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               style: const TextStyle(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                   fontSize: 24,
                   fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
               decoration: InputDecoration(
                 hintText: '0',
                 hintStyle: const TextStyle(
-                    color: Colors.white24, fontSize: 24),
+                    color: AppColors.textDisabled, fontSize: 24),
                 suffixText: '分钟',
                 suffixStyle:
-                    const TextStyle(color: Colors.white54, fontSize: 14),
-                filled: true,
-                fillColor: const Color(0xFF1E293B),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide:
-                      const BorderSide(color: Color(0xFF334155)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide:
-                      const BorderSide(color: Color(0xFF334155)),
-                ),
+                    const TextStyle(color: AppColors.textSecondary, fontSize: 14),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: const BorderSide(

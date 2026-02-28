@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:smartfactory/config/theme.dart';
 import 'package:smartfactory/providers/report_providers.dart';
 import 'package:smartfactory/widgets/production/big_number_field.dart';
 
@@ -103,11 +104,11 @@ class _IncomingInspectionScreenState
           padding: const EdgeInsets.all(16),
           children: [
             const Text('物料名称 *',
-                style: TextStyle(color: Colors.white70, fontSize: 13)),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
             const SizedBox(height: 8),
             TextFormField(
               controller: _materialCtrl,
-              style: const TextStyle(color: Colors.white, fontSize: 15),
+              style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
               validator: (v) =>
                   (v == null || v.trim().isEmpty) ? '请填写物料名称' : null,
               decoration: _inputDecoration('如：电机、电池、外壳...'),
@@ -115,11 +116,11 @@ class _IncomingInspectionScreenState
             const SizedBox(height: 16),
 
             const Text('供应商（可选）',
-                style: TextStyle(color: Colors.white70, fontSize: 13)),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
             const SizedBox(height: 8),
             TextFormField(
               controller: _supplierCtrl,
-              style: const TextStyle(color: Colors.white, fontSize: 15),
+              style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
               decoration: _inputDecoration('供应商名称'),
             ),
             const SizedBox(height: 20),
@@ -134,11 +135,11 @@ class _IncomingInspectionScreenState
             const SizedBox(height: 16),
 
             const Text('不良描述（可选）',
-                style: TextStyle(color: Colors.white70, fontSize: 13)),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
             const SizedBox(height: 8),
             TextFormField(
               controller: _descCtrl,
-              style: const TextStyle(color: Colors.white, fontSize: 14),
+              style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
               maxLines: 3,
               decoration:
                   _inputDecoration('描述不良现象，如：外观划伤、尺寸偏差...'),
@@ -146,7 +147,7 @@ class _IncomingInspectionScreenState
             const SizedBox(height: 20),
 
             const Text('检验结论',
-                style: TextStyle(color: Colors.white70, fontSize: 13)),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -180,19 +181,19 @@ class _IncomingInspectionScreenState
             Container(
               height: 56,
               decoration: BoxDecoration(
-                color: const Color(0xFF1E293B),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFF334155)),
+                border: Border.all(color: AppColors.border),
               ),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.camera_alt_outlined,
-                      color: Colors.white38, size: 20),
+                      color: AppColors.textDisabled, size: 20),
                   SizedBox(width: 8),
                   Text('拍照留证（Sprint 3 实现）',
                       style:
-                          TextStyle(color: Colors.white38, fontSize: 13)),
+                          TextStyle(color: AppColors.textDisabled, fontSize: 13)),
                 ],
               ),
             ),
@@ -232,17 +233,7 @@ class _IncomingInspectionScreenState
   InputDecoration _inputDecoration(String hint) => InputDecoration(
         hintText: hint,
         hintStyle:
-            const TextStyle(color: Colors.white38, fontSize: 13),
-        filled: true,
-        fillColor: const Color(0xFF1E293B),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF334155)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF334155)),
-        ),
+            const TextStyle(color: AppColors.textDisabled, fontSize: 13),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide:
@@ -277,17 +268,17 @@ class _ResultButton extends StatelessWidget {
           duration: const Duration(milliseconds: 150),
           padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
-            color: selected ? color : const Color(0xFF1E293B),
+            color: selected ? color : Colors.white,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: selected ? color : const Color(0xFF334155),
+              color: selected ? color : AppColors.border,
             ),
           ),
           child: Text(
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: selected ? Colors.white : Colors.white54,
+              color: selected ? Colors.white : AppColors.textSecondary,
               fontSize: 13,
               fontWeight:
                   selected ? FontWeight.bold : FontWeight.normal,

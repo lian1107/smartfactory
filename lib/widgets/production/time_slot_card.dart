@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:smartfactory/config/theme.dart';
 
 class TimeSlotFormData {
   final int slotStart;
@@ -48,9 +49,9 @@ class TimeSlotCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF334155)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,7 +59,7 @@ class TimeSlotCard extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-              color: Colors.white,
+              color: AppColors.textPrimary,
               fontSize: 15,
               fontWeight: FontWeight.w600,
             ),
@@ -92,22 +93,12 @@ class TimeSlotCard extends StatelessWidget {
           const SizedBox(height: 10),
           TextFormField(
             controller: data.noteCtrl,
-            style: const TextStyle(color: Colors.white, fontSize: 14),
+            style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
             maxLines: 1,
             decoration: InputDecoration(
               hintText: '停线原因 / 异常备注（可选）',
               hintStyle:
-                  const TextStyle(color: Colors.white38, fontSize: 13),
-              filled: true,
-              fillColor: const Color(0xFF0F172A),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: Color(0xFF334155)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: Color(0xFF334155)),
-              ),
+                  const TextStyle(color: AppColors.textDisabled, fontSize: 13),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: const BorderSide(
@@ -141,7 +132,7 @@ class _SlotNumberField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label,
-            style: const TextStyle(color: Colors.white54, fontSize: 12)),
+            style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
         const SizedBox(height: 4),
         TextFormField(
           controller: controller,
@@ -149,25 +140,15 @@ class _SlotNumberField extends StatelessWidget {
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           textAlign: TextAlign.center,
           style: const TextStyle(
-            color: Colors.white,
+            color: AppColors.textPrimary,
             fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
           decoration: InputDecoration(
             hintText: defaultValue ?? '-',
             hintStyle: const TextStyle(
-              color: Colors.white24,
+              color: AppColors.textDisabled,
               fontSize: 22,
-            ),
-            filled: true,
-            fillColor: const Color(0xFF0F172A),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFF334155)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Color(0xFF334155)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
