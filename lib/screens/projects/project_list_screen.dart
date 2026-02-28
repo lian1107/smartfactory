@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:smartfactory/config/constants.dart';
 import 'package:smartfactory/config/theme.dart';
 import 'package:smartfactory/models/project.dart';
+import 'package:smartfactory/providers/auth_provider.dart';
 import 'package:smartfactory/providers/project_providers.dart';
 import 'package:smartfactory/utils/date_utils.dart';
 import 'package:smartfactory/utils/format_utils.dart';
@@ -31,6 +33,7 @@ class _ProjectListScreenState extends ConsumerState<ProjectListScreen> {
   @override
   Widget build(BuildContext context) {
     final projectsAsync = ref.watch(projectListProvider);
+    final profile = ref.watch(currentProfileProvider).valueOrNull;
 
     return Scaffold(
       appBar: AppBar(
@@ -43,11 +46,13 @@ class _ProjectListScreenState extends ConsumerState<ProjectListScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.go('/projects/new'),
-        icon: const Icon(Icons.add),
-        label: const Text('新建项目'),
-      ),
+      floatingActionButton: canEdit(profile?.role)
+          ? FloatingActionButton.extended(
+              onPressed: () => context.go('/projects/new'),
+              icon: const Icon(Icons.add),
+              label: const Text('新建项目'),
+            )
+          : null,
       body: Column(
         children: [
           // Search + filter
@@ -125,10 +130,12 @@ class _ProjectListScreenState extends ConsumerState<ProjectListScreen> {
                     message: '暂无项目',
                     subMessage: '点击右下角按钮创建第一个项目',
                     icon: Icons.folder_outlined,
-                    action: ElevatedButton(
-                      onPressed: () => context.go('/projects/new'),
-                      child: const Text('新建项目'),
-                    ),
+                    action: canEdit(profile?.role)
+                        ? ElevatedButton(
+                            onPressed: () => context.go('/projects/new'),
+                            child: const Text('新建项目'),
+                          )
+                        : null,
                   );
                 }
                 return RefreshIndicator(

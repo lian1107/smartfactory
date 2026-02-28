@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:smartfactory/config/constants.dart';
 import 'package:smartfactory/config/theme.dart';
 import 'package:smartfactory/models/product.dart';
 import 'package:smartfactory/models/document_link.dart';
+import 'package:smartfactory/providers/auth_provider.dart';
 import 'package:smartfactory/providers/project_providers.dart';
 import 'package:smartfactory/widgets/common/confirm_dialog.dart';
 import 'package:smartfactory/widgets/common/error_state.dart';
@@ -76,18 +78,22 @@ class _ProductDetailView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(currentProfileProvider).valueOrNull;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(product.name),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.edit_outlined),
-            onPressed: () => context.go('/products/${product.id}/edit'),
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete_outline, color: AppColors.error),
-            onPressed: () => _delete(context, ref),
-          ),
+          if (canEdit(profile?.role)) ...[
+            IconButton(
+              icon: const Icon(Icons.edit_outlined),
+              onPressed: () => context.go('/products/${product.id}/edit'),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete_outline, color: AppColors.error),
+              onPressed: () => _delete(context, ref),
+            ),
+          ],
         ],
         bottom: TabBar(
           controller: tabController,

@@ -59,3 +59,6 @@ class AppConstants {
     'technician': '维修技术员',
   };
 }
+
+/// Only admin can create, edit or delete records.
+bool canEdit(String? role) => role == 'admin';

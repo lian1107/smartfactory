@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:smartfactory/config/constants.dart';
 import 'package:smartfactory/config/theme.dart';
 import 'package:smartfactory/models/project.dart';
 import 'package:smartfactory/models/project_phase.dart';
+import 'package:smartfactory/providers/auth_provider.dart';
 import 'package:smartfactory/providers/project_providers.dart';
 import 'package:smartfactory/providers/realtime_providers.dart';
 import 'package:smartfactory/utils/date_utils.dart';
@@ -63,6 +65,8 @@ class _ProjectView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(currentProfileProvider).valueOrNull;
+
     return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -89,59 +93,60 @@ class _ProjectView extends ConsumerWidget {
           ],
         ),
         actions: [
-          PopupMenuButton<String>(
-            onSelected: (action) => _handleAction(context, ref, action),
-            itemBuilder: (_) => [
-              const PopupMenuItem(
-                value: 'edit',
-                child: Row(
-                  children: [
-                    Icon(Icons.edit_outlined, size: 18),
-                    SizedBox(width: 8),
-                    Text('编辑项目'),
-                  ],
+          if (canEdit(profile?.role))
+            PopupMenuButton<String>(
+              onSelected: (action) => _handleAction(context, ref, action),
+              itemBuilder: (_) => [
+                const PopupMenuItem(
+                  value: 'edit',
+                  child: Row(
+                    children: [
+                      Icon(Icons.edit_outlined, size: 18),
+                      SizedBox(width: 8),
+                      Text('编辑项目'),
+                    ],
+                  ),
                 ),
-              ),
-              PopupMenuItem(
-                value: project.status == 'active' ? 'hold' : 'activate',
-                child: Row(
-                  children: [
-                    Icon(
-                      project.status == 'active'
-                          ? Icons.pause_circle_outline
-                          : Icons.play_circle_outline,
-                      size: 18,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(project.status == 'active' ? '暂停项目' : '恢复项目'),
-                  ],
+                PopupMenuItem(
+                  value: project.status == 'active' ? 'hold' : 'activate',
+                  child: Row(
+                    children: [
+                      Icon(
+                        project.status == 'active'
+                            ? Icons.pause_circle_outline
+                            : Icons.play_circle_outline,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(project.status == 'active' ? '暂停项目' : '恢复项目'),
+                    ],
+                  ),
                 ),
-              ),
-              const PopupMenuItem(
-                value: 'complete',
-                child: Row(
-                  children: [
-                    Icon(Icons.check_circle_outline, size: 18,
-                        color: AppColors.success),
-                    SizedBox(width: 8),
-                    Text('标记完成'),
-                  ],
+                const PopupMenuItem(
+                  value: 'complete',
+                  child: Row(
+                    children: [
+                      Icon(Icons.check_circle_outline, size: 18,
+                          color: AppColors.success),
+                      SizedBox(width: 8),
+                      Text('标记完成'),
+                    ],
+                  ),
                 ),
-              ),
-              const PopupMenuDivider(),
-              const PopupMenuItem(
-                value: 'delete',
-                child: Row(
-                  children: [
-                    Icon(Icons.delete_outline, size: 18, color: AppColors.error),
-                    SizedBox(width: 8),
-                    Text('删除项目',
-                        style: TextStyle(color: AppColors.error)),
-                  ],
+                const PopupMenuDivider(),
+                const PopupMenuItem(
+                  value: 'delete',
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete_outline, size: 18, color: AppColors.error),
+                      SizedBox(width: 8),
+                      Text('删除项目',
+                          style: TextStyle(color: AppColors.error)),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
         ],
       ),
       body: Column(

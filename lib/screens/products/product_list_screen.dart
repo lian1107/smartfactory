@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:smartfactory/config/constants.dart';
 import 'package:smartfactory/config/theme.dart';
 import 'package:smartfactory/models/product.dart';
+import 'package:smartfactory/providers/auth_provider.dart';
 import 'package:smartfactory/providers/project_providers.dart';
 import 'package:smartfactory/widgets/common/empty_state.dart';
 import 'package:smartfactory/widgets/common/error_state.dart';
@@ -27,6 +29,7 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
   @override
   Widget build(BuildContext context) {
     final productsAsync = ref.watch(productListProvider);
+    final profile = ref.watch(currentProfileProvider).valueOrNull;
 
     return Scaffold(
       appBar: AppBar(
@@ -39,11 +42,13 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.go('/products/new'),
-        icon: const Icon(Icons.add),
-        label: const Text('新建产品'),
-      ),
+      floatingActionButton: canEdit(profile?.role)
+          ? FloatingActionButton.extended(
+              onPressed: () => context.go('/products/new'),
+              icon: const Icon(Icons.add),
+              label: const Text('新建产品'),
+            )
+          : null,
       body: Column(
         children: [
           // Search bar
@@ -89,10 +94,12 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
                     message: '暂无产品',
                     subMessage: '点击右下角按钮创建第一个产品',
                     icon: Icons.inventory_2_outlined,
-                    action: ElevatedButton(
-                      onPressed: () => context.go('/products/new'),
-                      child: const Text('新建产品'),
-                    ),
+                    action: canEdit(profile?.role)
+                        ? ElevatedButton(
+                            onPressed: () => context.go('/products/new'),
+                            child: const Text('新建产品'),
+                          )
+                        : null,
                   );
                 }
                 return RefreshIndicator(
