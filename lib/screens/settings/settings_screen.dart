@@ -307,10 +307,9 @@ class _UserTile extends ConsumerWidget {
         isDense: true,
         items: const [
           DropdownMenuItem(value: 'admin', child: Text('管理员')),
-          DropdownMenuItem(value: 'leader', child: Text('项目负责人')),
-          DropdownMenuItem(value: 'qc', child: Text('质检员')),
-          DropdownMenuItem(
-              value: 'technician', child: Text('技术员')),
+          DropdownMenuItem(value: 'leader', child: Text('产线组长')),
+          DropdownMenuItem(value: 'qc', child: Text('品质员')),
+          DropdownMenuItem(value: 'technician', child: Text('维修技术员')),
         ],
         onChanged: (newRole) async {
           if (newRole == null || newRole == profile.role) return;

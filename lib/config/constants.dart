@@ -54,8 +54,8 @@ class AppConstants {
   // User role labels
   static const Map<String, String> roleLabels = {
     'admin': '管理员',
-    'leader': '项目负责人',
-    'qc': '质检员',
-    'technician': '技术员',
+    'leader': '产线组长',
+    'qc': '品质员',
+    'technician': '维修技术员',
   };
 }
