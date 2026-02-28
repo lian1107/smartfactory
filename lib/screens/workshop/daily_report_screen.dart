@@ -1,16 +1,241 @@
 import 'package:flutter/material.dart';
-import '_sprint_placeholder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:smartfactory/models/product.dart';
+import 'package:smartfactory/providers/project_providers.dart';
+import 'package:smartfactory/providers/report_providers.dart';
+import 'package:smartfactory/widgets/production/shift_selector.dart';
+import 'package:smartfactory/widgets/production/time_slot_card.dart';
 
-/// Sprint 3: 生产报工页面占位
-class DailyReportScreen extends StatelessWidget {
+class DailyReportScreen extends ConsumerStatefulWidget {
   const DailyReportScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => const _SprintPlaceholder(
-        title: '生产报工',
-        icon: Icons.factory_rounded,
-        color: Color(0xFF3B82F6),
-        sprint: 'Sprint 3',
-        description: '产线组长在此录入每个时段的产量和不良数，\n替代手写报表。',
-      );
+  ConsumerState<DailyReportScreen> createState() => _DailyReportScreenState();
+}
+
+class _DailyReportScreenState extends ConsumerState<DailyReportScreen> {
+  final _formKey = GlobalKey<FormState>();
+  Shift _shift = Shift.early;
+  String? _selectedProductId;
+  List<TimeSlotFormData> _slots = [];
+  bool _submitting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _rebuildSlots(Shift.early);
+  }
+
+  void _rebuildSlots(Shift shift) {
+    for (final s in _slots) {
+      s.dispose();
+    }
+    _slots = shift.slots
+        .map((pair) =>
+            TimeSlotFormData(slotStart: pair[0], slotEnd: pair[1]))
+        .toList();
+  }
+
+  @override
+  void dispose() {
+    for (final s in _slots) {
+      s.dispose();
+    }
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    setState(() => _submitting = true);
+    try {
+      await ref.read(dailyReportsProvider.notifier).submit(
+            date: DateTime.now(),
+            shift: _shift.value,
+            productId: _selectedProductId,
+            slots: _slots.map((s) => s.toPayload()).toList(),
+          );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('报工提交成功'),
+            backgroundColor: Color(0xFF10B981),
+          ),
+        );
+        context.pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('提交失败：$e'),
+            backgroundColor: const Color(0xFFEF4444),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _submitting = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final productsAsync = ref.watch(productListProvider);
+
+    return Scaffold(
+      backgroundColor: const Color(0xFF0F172A),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF1E293B),
+        foregroundColor: Colors.white,
+        title: const Text('生产报工'),
+        centerTitle: false,
+      ),
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            Text(
+              _formatDate(DateTime.now()),
+              style: const TextStyle(color: Colors.white54, fontSize: 13),
+            ),
+            const SizedBox(height: 16),
+
+            // 班次选择
+            const Text('选择班次',
+                style: TextStyle(color: Colors.white70, fontSize: 13)),
+            const SizedBox(height: 8),
+            ShiftSelector(
+              selected: _shift,
+              onChanged: (s) {
+                setState(() {
+                  _shift = s;
+                  _rebuildSlots(s);
+                });
+              },
+            ),
+            const SizedBox(height: 20),
+
+            // 产品选择
+            const Text('选择产品（可选）',
+                style: TextStyle(color: Colors.white70, fontSize: 13)),
+            const SizedBox(height: 8),
+            productsAsync.when(
+              loading: () => const SizedBox(
+                height: 48,
+                child: Center(
+                  child: CircularProgressIndicator(
+                      color: Color(0xFF3B82F6), strokeWidth: 2),
+                ),
+              ),
+              error: (_, __) => const SizedBox.shrink(),
+              data: (products) => _ProductDropdown(
+                products: products,
+                value: _selectedProductId,
+                onChanged: (id) =>
+                    setState(() => _selectedProductId = id),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // 时段卡片
+            const Text(
+              '各时段产量',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 12),
+            ..._slots.map((s) => TimeSlotCard(data: s)),
+            const SizedBox(height: 24),
+
+            // 提交按钮
+            SizedBox(
+              height: 54,
+              child: ElevatedButton(
+                onPressed: _submitting ? null : _submit,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF10B981),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: _submitting
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                            color: Colors.white, strokeWidth: 2),
+                      )
+                    : const Text(
+                        '提交报工',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+              ),
+            ),
+            const SizedBox(height: 32),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatDate(DateTime d) {
+    const weekdays = ['', '一', '二', '三', '四', '五', '六', '日'];
+    return '${d.year}年${d.month}月${d.day}日  周${weekdays[d.weekday]}';
+  }
+}
+
+class _ProductDropdown extends StatelessWidget {
+  final List<Product> products;
+  final String? value;
+  final ValueChanged<String?> onChanged;
+
+  const _ProductDropdown({
+    required this.products,
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<String>(
+      value: value,
+      dropdownColor: const Color(0xFF1E293B),
+      style: const TextStyle(color: Colors.white, fontSize: 14),
+      decoration: InputDecoration(
+        hintText: '不选则不关联产品',
+        hintStyle: const TextStyle(color: Colors.white38),
+        filled: true,
+        fillColor: const Color(0xFF1E293B),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Color(0xFF334155)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Color(0xFF334155)),
+        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      ),
+      items: [
+        const DropdownMenuItem<String>(
+          value: null,
+          child: Text('-- 不关联产品 --',
+              style: TextStyle(color: Colors.white54)),
+        ),
+        ...products.map((p) => DropdownMenuItem<String>(
+              value: p.id,
+              child: Text(p.name),
+            )),
+      ],
+      onChanged: onChanged,
+    );
+  }
 }
