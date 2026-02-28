@@ -16,6 +16,9 @@ import 'package:smartfactory/screens/workshop/daily_report_screen.dart';
 import 'package:smartfactory/screens/workshop/quality_check_screen.dart';
 import 'package:smartfactory/screens/workshop/repair_log_screen.dart';
 import 'package:smartfactory/screens/workshop/incoming_inspection_screen.dart';
+import 'package:smartfactory/screens/docs/doc_list_screen.dart';
+import 'package:smartfactory/screens/docs/doc_form_screen.dart';
+import 'package:smartfactory/screens/docs/doc_detail_screen.dart';
 import 'package:smartfactory/widgets/common/app_scaffold.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -137,18 +140,18 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/docs',
             name: 'docs',
-            builder: (_, __) => const _PlaceholderScreen(title: '文档'),
+            builder: (_, __) => const DocListScreen(),
           ),
           GoRoute(
             path: '/docs/new',
             name: 'docs-new',
-            builder: (_, __) => const _PlaceholderScreen(title: '新建文档'),
+            builder: (_, __) => const DocFormScreen(),
           ),
           GoRoute(
             path: '/docs/:id',
             name: 'doc-detail',
-            builder: (_, state) => _PlaceholderScreen(
-              title: '文档详情 ${state.pathParameters['id']}',
+            builder: (_, state) => DocDetailScreen(
+              docId: state.pathParameters['id']!,
             ),
           ),
           GoRoute(
