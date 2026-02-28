@@ -19,6 +19,7 @@ import 'package:smartfactory/screens/workshop/incoming_inspection_screen.dart';
 import 'package:smartfactory/screens/docs/doc_list_screen.dart';
 import 'package:smartfactory/screens/docs/doc_form_screen.dart';
 import 'package:smartfactory/screens/docs/doc_detail_screen.dart';
+import 'package:smartfactory/screens/ai/ai_screen.dart';
 import 'package:smartfactory/widgets/common/app_scaffold.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -135,7 +136,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/ai',
             name: 'ai',
-            builder: (_, __) => const _PlaceholderScreen(title: 'AI 分析'),
+            builder: (_, __) => const AiScreen(),
           ),
           GoRoute(
             path: '/docs',
@@ -192,17 +193,3 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 });
 
-class _PlaceholderScreen extends StatelessWidget {
-  final String title;
-  const _PlaceholderScreen({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: Center(
-        child: Text('$title — 开发中', style: const TextStyle(color: Colors.grey)),
-      ),
-    );
-  }
-}
