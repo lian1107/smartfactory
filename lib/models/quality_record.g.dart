@@ -2,6 +2,10 @@
 
 part of 'quality_record.dart';
 
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
 QualityRecord _$QualityRecordFromJson(Map<String, dynamic> json) =>
     QualityRecord(
       id: json['id'] as String,

@@ -2,6 +2,10 @@
 
 part of 'incoming_inspection.dart';
 
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
 IncomingInspection _$IncomingInspectionFromJson(Map<String, dynamic> json) =>
     IncomingInspection(
       id: json['id'] as String,
@@ -16,8 +20,7 @@ IncomingInspection _$IncomingInspectionFromJson(Map<String, dynamic> json) =>
       createdAt: DateTime.parse(json['created_at'] as String),
     );
 
-Map<String, dynamic> _$IncomingInspectionToJson(
-        IncomingInspection instance) =>
+Map<String, dynamic> _$IncomingInspectionToJson(IncomingInspection instance) =>
     <String, dynamic>{
       'id': instance.id,
       'date': instance.date.toIso8601String(),

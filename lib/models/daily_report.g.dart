@@ -2,6 +2,10 @@
 
 part of 'daily_report.dart';
 
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
 DailyReport _$DailyReportFromJson(Map<String, dynamic> json) => DailyReport(
       id: json['id'] as String,
       date: DateTime.parse(json['date'] as String),

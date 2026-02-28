@@ -2,6 +2,10 @@
 
 part of 'report_time_slot.dart';
 
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
 ReportTimeSlot _$ReportTimeSlotFromJson(Map<String, dynamic> json) =>
     ReportTimeSlot(
       id: json['id'] as String,

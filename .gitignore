@@ -50,3 +50,7 @@ app.*.map.json
 # Generated files
 *.g.dart
 *.freezed.dart
+
+# IDE / Supabase temp
+.metadata
+supabase/.temp/

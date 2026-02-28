@@ -31,6 +31,8 @@ class ShimmerCardList extends StatelessWidget {
       highlightColor: Colors.white,
       child: ListView.separated(
         padding: const EdgeInsets.all(16),
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: count,
         separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemBuilder: (_, __) => Container(

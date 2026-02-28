@@ -2,6 +2,10 @@
 
 part of 'repair_record.dart';
 
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
 RepairRecord _$RepairRecordFromJson(Map<String, dynamic> json) => RepairRecord(
       id: json['id'] as String,
       date: DateTime.parse(json['date'] as String),
