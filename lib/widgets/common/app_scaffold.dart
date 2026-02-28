@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smartfactory/config/constants.dart';
 import 'package:smartfactory/config/theme.dart';
+import 'package:smartfactory/models/profile.dart';
 import 'package:smartfactory/providers/auth_provider.dart';
 
 class _NavItem {
@@ -131,7 +132,7 @@ class AppScaffold extends ConsumerWidget {
 class _WideLayout extends ConsumerWidget {
   final int selectedIndex;
   final List<_NavItem> navItems;
-  final dynamic profile;
+  final Profile? profile;
   final Widget child;
 
   const _WideLayout({
@@ -165,7 +166,7 @@ class _WideLayout extends ConsumerWidget {
 class _Sidebar extends ConsumerWidget {
   final int selectedIndex;
   final List<_NavItem> navItems;
-  final dynamic profile;
+  final Profile? profile;
 
   const _Sidebar({
     required this.selectedIndex,
