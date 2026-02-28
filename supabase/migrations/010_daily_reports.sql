@@ -27,10 +27,21 @@ CREATE TABLE IF NOT EXISTS report_time_slots (
   created_at    timestamptz NOT NULL DEFAULT now()
 );
 
--- updated_at 触发器（复用已有函数）
+-- 确保 updated_at 触发器函数存在（兼容不同迁移历史）
+CREATE OR REPLACE FUNCTION public.update_updated_at()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $func$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END
+$func$;
+
+-- updated_at 触发器
 CREATE TRIGGER update_daily_reports_updated_at
   BEFORE UPDATE ON daily_reports
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+  FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
 -- 索引
 CREATE INDEX idx_daily_reports_date ON daily_reports(date DESC);
